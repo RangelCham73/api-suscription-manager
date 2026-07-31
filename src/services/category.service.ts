@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { CreateCategoryDto } from "../types/category";
 
 export class CategoryService {
   async getAll() {
@@ -13,6 +14,14 @@ export class CategoryService {
     return prisma.category.findUnique({
       where: {
         id,
+      },
+    });
+  }
+
+  async create(data: CreateCategoryDto) {
+    return prisma.category.create({
+      data: {
+        name: data.name,
       },
     });
   }

@@ -6,6 +6,41 @@ datasource db {
   provider = "postgresql"
 }
 
+model Category {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id           String       @id @default(uuid())
+  name         String
+  categoryId   String
+  billingCycle BillingCycle
+  startDate    DateTime
+  active       Boolean      @default(true)
+  endDate      DateTime?
+  payments     Payment[]
+  category     Category     @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@index([active])
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  subscriptionId String
+  amount         Decimal       @db.Decimal(10, 2)
+  paymentDate    DateTime
+  periodStart    DateTime
+  periodEnd      DateTime
+  status         PaymentStatus @default(PENDING)
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([paymentDate])
+}
+
 enum BillingCycle {
   MONTHLY
   YEARLY
@@ -15,52 +50,4 @@ enum PaymentStatus {
   PENDING
   PAID
   MISSED
-}
-
-model Category {
-  id            String         @id @default(uuid())
-  name          String         @unique
-  subscriptions Subscription[]
-}
-
-model Subscription {
-  id              String         @id @default(uuid())
-
-  name            String
-
-  categoryId      String
-  category         Category       @relation(fields: [categoryId], references: [id])
-
-  billingCycle    BillingCycle
-
-  startDate       DateTime
-
-  active          Boolean         @default(true)
-
-  endDate         DateTime?
-
-  payments        Payment[]
-
-  @@index([categoryId])
-  @@index([active])
-}
-
-model Payment {
-  id                String          @id @default(uuid())
-
-  subscriptionId    String
-  subscription      Subscription    @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-
-  amount            Decimal         @db.Decimal(10,2)
-
-  paymentDate       DateTime
-
-  periodStart       DateTime
-
-  periodEnd         DateTime
-
-  status            PaymentStatus   @default(PENDING)
-
-  @@index([subscriptionId])
-  @@index([paymentDate])
 }

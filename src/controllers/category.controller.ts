@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { categoryService } from "../services/category.service";
-import type { CategoryParams } from "../types/categoryParams";
+import type { CategoryParams, CreateCategoryDto } from "../types/category";
 
 export class CategoryController {
   async getAll(req: Request, res: Response) {
@@ -24,6 +24,15 @@ export class CategoryController {
     }
 
     res.json(category);
+  }
+
+  async create(
+    req: Request<{}, {}, CreateCategoryDto>,
+    res: Response
+  ) {
+    const category = await categoryService.create(req.body);
+
+    res.status(201).json(category);
   }
 }
 
