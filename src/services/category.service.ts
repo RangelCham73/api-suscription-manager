@@ -1,4 +1,4 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../lib/prisma";
 import { CreateCategoryDto } from "../types/category";
 
 export class CategoryService {

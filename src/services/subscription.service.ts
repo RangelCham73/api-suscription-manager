@@ -1,5 +1,5 @@
 import { BillingCycle, PaymentStatus } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../lib/prisma";
 import { CreateSubscriptionDto, UpdateSubscriptionDto } from "../types/subscription";
 
 export class SubscriptionService {
